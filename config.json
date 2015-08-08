@@ -1,0 +1,18 @@
+{
+	"ServerList" : [
+		{
+			"WebServer_ID" : 0,
+			"WebServer_Name" :  "Server Test",
+			"WebServer_Port" : 80,
+			"WebServer_Directory" : "www/test",
+			"IndexFiles" : "index.html;index.txt"
+		},
+		{
+			"WebServer_ID" : 1,
+			"WebServer_Name" :  "Server Test 1",
+			"WebServer_Port" : 8080,
+			"WebServer_Directory" : "www/test_2",
+			"IndexFiles" : "me.html;me.txt"
+		}
+	]
+}
