@@ -42,4 +42,22 @@ public class Logger {
 		    Console.Error(e.getMessage());
 		}
 	}
+	
+	public static void Add(String Log) {
+		try(java.io.PrintWriter OutputLog = new java.io.PrintWriter(new java.io.BufferedWriter(new java.io.FileWriter("logs/" + FILE_NAME + ".log", true)))) {
+		    OutputLog.println(Log);
+		}catch (IOException e) {
+		    Console.Error(e.getMessage());
+		}
+	}
+	
+	public static void Add(String[] Log) {
+		try(java.io.PrintWriter OutputLog = new java.io.PrintWriter(new java.io.BufferedWriter(new java.io.FileWriter("logs/" + FILE_NAME + ".log", true)))) {
+			for (String value : Log) {
+				OutputLog.println(value);
+			}
+		}catch (IOException e) {
+		    Console.Error(e.getMessage());
+		}
+	}
 }

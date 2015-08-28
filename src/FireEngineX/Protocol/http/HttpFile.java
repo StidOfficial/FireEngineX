@@ -25,6 +25,9 @@ public class HttpFile {
 	
 	private SimpleDateFormat DateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
 	
+	public String HOSTNAME = null;
+	public int PORT = 80;
+	
 	public HttpFile(JSONObject _ServerSettings) {
 		ServerSettings = _ServerSettings;
 	}
@@ -38,9 +41,10 @@ public class HttpFile {
 	}
 	// END
 	
-	public String[] GetFile(String Header[]) {
+	public String[] GetFile(String Header[]) {		
 		List<String> ResponseHeader = new ArrayList<String>();
 		
+		// Beta Debug
 		if(Header[0].split(" ").length < 2) {
 			for (String string : Header) {
 				Console.WriterLine(string);
@@ -52,7 +56,10 @@ public class HttpFile {
 			
 			UrlFile = (UrlFile.indexOf("?") > 0) ? UrlFile.substring(0, UrlFile.indexOf("?")) : UrlFile;
 			
-			File _File = new File(ServerSettings.get("WebServer_Directory").toString() + File.separator + UrlFile);
+			String ServerFolderPath = ServerSettings.get("WebServer_Directory").toString().replace("{$_HOSTNAME}", HOSTNAME).replace("{$_PORT}", Integer.toString(PORT)).replace("\\/", "/");
+			
+			File _File = new File(ServerFolderPath + File.separator + UrlFile);
+			
 			if(_File.exists()) {
 				if(_File.isFile()) {
 					try (BufferedReader BufferRead = new BufferedReader(new InputStreamReader(new FileInputStream(_File))))
@@ -91,7 +98,8 @@ public class HttpFile {
 					}
 					
 					if(IndexFind == null) {
-						String UrlPathPage = _File.toURI().getPath().replaceFirst(new File(ServerSettings.get("WebServer_Directory").toString()).toURI().getPath(), "");
+						
+						String UrlPathPage = _File.toURI().getPath().replaceFirst(new File(ServerFolderPath).toURI().getPath(), "");
 						
 						ResponseHeader.add("HTTP/1.0 202 OK");
 						ResponseHeader.add("Connection: keep-alive");
@@ -126,7 +134,7 @@ public class HttpFile {
 						
 						for (File File : _File.listFiles()) {
 							ResponseHeader.add("					<tr id=\"tr\" style=\"height: 25px;\">");
-							ResponseHeader.add("						<td><a href= \"./" + File.getName() + ((File.isDirectory()) ? "/" : "") + "\">" + File.getName() + "</a></td>");
+							ResponseHeader.add("						<td><a href=\"http://" + HttpProtocol.getHeaderString(Header, "Host") + "/" + UrlPathPage + File.getName() +  "\">" + File.getName() + "</a></td>");
 							ResponseHeader.add("						<td>" + new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss", Locale.ENGLISH).format(File.lastModified()) + "</td>");
 							ResponseHeader.add("						<td>" + readableFileSize(File.length()) + "</td>");
 							ResponseHeader.add("					</tr>");
@@ -136,6 +144,8 @@ public class HttpFile {
 						ResponseHeader.add("				<tfoot style=\"border-top:1px solid black;\">");
 						ResponseHeader.add("   					<tr style=\"height: 25px;\">");
 						ResponseHeader.add("        				<th>FireEngineX Web Server - (c) 2015-2018</th>");
+						ResponseHeader.add("        				<th></th>");
+						ResponseHeader.add("        				<th style=\"text-align:right;\">" + _File.listFiles().length + " File(s)</th>");
 						ResponseHeader.add("     				</tr>");
 						ResponseHeader.add("				</tfoot>");
 
@@ -144,7 +154,7 @@ public class HttpFile {
 						ResponseHeader.add("	</body>");
 						ResponseHeader.add("</html>");
 					} else {
-						File _IndexFile = new File(ServerSettings.get("WebServer_Directory").toString() + File.separator + UrlFile + IndexFind);
+						File _IndexFile = new File(ServerFolderPath + File.separator + UrlFile + IndexFind);
 						try (BufferedReader BufferRead = new BufferedReader(new InputStreamReader(new FileInputStream(_IndexFile))))
 			    		{						
 							ResponseHeader.add("HTTP/1.0 202 OK");

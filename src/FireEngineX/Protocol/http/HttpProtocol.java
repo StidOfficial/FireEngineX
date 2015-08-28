@@ -42,7 +42,6 @@ public class HttpProtocol {
 		try {
 			String ReadMessage;
 			while ((ReadMessage = ReaderMessage.readLine()) != null && ReadMessage.length() != 0) {
-				Console.WriterLine(ReadMessage);
 				if(Header.size() == 0 && !(ReadMessage.startsWith("GET") || ReadMessage.startsWith("POST"))) {
 					Console.Error("Header Error (" + ReadMessage + ")");
 					ReaderMessage.close();
@@ -61,9 +60,31 @@ public class HttpProtocol {
 	public void GetResponse(String[] Header) {
 		HttpFile HttpFile = new HttpFile(ServerSettings);
 		
+		String HostHeader[] = HttpProtocol.getHeaderString(Header, "Host").split(":");
+		
+        if(HostHeader.length > 0) {
+        	HttpFile.HOSTNAME = HostHeader[0];
+        	if(HostHeader.length > 1) {
+        		HttpFile.PORT = Integer.parseInt(HostHeader[1]);
+        	}
+        }
+		
 		for (String HeaderLine : HttpFile.GetFile(Header)) {
 			WriterMessage.println(HeaderLine);
 		}
+	}
+	
+	public static String getHeaderString(String[] Header, String Key) {
+		String ReturnValue = null;
+		for (String Value : Header) {
+			if(Value.startsWith(Key)) {
+				String ValueSplit[] = Value.split(":", 2);
+				if(ValueSplit.length == 2) {
+					ReturnValue = ValueSplit[1].trim();
+				}
+			}
+		}
+		return ReturnValue;
 	}
 	
 	public void GetDisconnect() {

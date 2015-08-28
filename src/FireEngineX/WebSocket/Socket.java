@@ -25,15 +25,16 @@ public class Socket {
 			        new Thread(new Runnable() {
 						@Override
 						public void run() {
-							HttpProtocol HttpProtocol = new HttpProtocol(ServerSettings, WebSocket);
+							HttpProtocol _HttpProtocol = new HttpProtocol(ServerSettings, WebSocket);
 					        
-					        String[] Header = HttpProtocol.GetHTTPHeader();
+					        String[] Header = _HttpProtocol.GetHTTPHeader();
+					        Logger.Add(Header);
 					        
 					        if(Header.length != 0 && !WebSocket.isClosed()) {
-					        	HttpProtocol.GetResponse(Header);
+					        	_HttpProtocol.GetResponse(Header);
 					        }
 					        
-					        HttpProtocol.GetDisconnect();
+					        _HttpProtocol.GetDisconnect();
 						}
 					}).start();
 				} catch(Exception e) {
