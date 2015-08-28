@@ -5,6 +5,7 @@ Web Server Engine writen on Java
 
 Create a serveur exemple in config.json :
 
+```
 {
 	"ServerList" : [
 		{
@@ -16,12 +17,13 @@ Create a serveur exemple in config.json :
 		}
 	]
 }
+```
 
 Additionnal Option of WebServer_Directory :
 
-Usage exemple : www/{$_HOSTNAME}
+Usage exemple : `www/{$_HOSTNAME}`
 
-Output : www/localhost or www/domain.local
+Output : `www/localhost` or `www/domain.local`
 
-- {$_HOSTNAME} : DNS Hostname client contact
-- {$_POST} : Port client contact
+- `{$_HOSTNAME}` : DNS Hostname client contact
+- `{$_POST}` : Port client contact
